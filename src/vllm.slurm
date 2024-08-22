@@ -15,6 +15,9 @@ vllm_port_number=$(find_available_port $hostname 8080 65535)
 echo "Server address: http://${hostname}:${vllm_port_number}/v1"
 echo "http://${hostname}:${vllm_port_number}/v1" > ${VLLM_BASE_URL_FILENAME}
 
+# https://github.com/vllm-project/vllm/blob/main/vllm/engine/arg_utils.py
+# Truncate model input length for testing purposes
+
 # Activate vllm venv
 if [ "$VENV_BASE" = "singularity" ]; then
     export SINGULARITY_IMAGE=/projects/aieng/public/vector-inference_0.2.0.sif
@@ -28,7 +31,9 @@ if [ "$VENV_BASE" = "singularity" ]; then
     --port ${vllm_port_number} \
     --tensor-parallel-size ${NUM_GPUS} \
     --dtype ${VLLM_DATA_TYPE} \
-    --max-logprobs ${VLLM_MAX_LOGPROBS} 
+    --max-logprobs ${VLLM_MAX_LOGPROBS} \
+    --max-model-len 500 # IAN: TOOD: Exit Max context len
+    #--max-model-len 10000
 else
     source ${VENV_BASE}/bin/activate
     python3 -m vllm.entrypoints.openai.api_server \
