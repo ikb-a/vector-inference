@@ -126,7 +126,7 @@ if [ -n "$image_feature_size" ]; then
 fi
 
 # Set data type to fp16 instead of bf16 for non-Ampere GPUs
-fp16_partitions="t4v1 t4v2"
+fp16_partitions="t4v1 t4v2 rtx6000 t4v1,t4v2 t4v1,t4v2,rtx6000"
 
 # choose from 'auto', 'half', 'float16', 'bfloat16', 'float', 'float32'
 if [[ ${fp16_partitions} =~ ${JOB_PARTITION} ]]; then
